@@ -8,6 +8,8 @@ processors:
   batch:
 
 exporters:
+  logging:
+    loglevel: debug
   prometheus:
     endpoint: 0.0.0.0:9090
     namespace: default
@@ -15,6 +17,10 @@ exporters:
 service:
   pipelines:
     traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging]
+    metrics:
       receivers: [otlp]
       processors: [batch]
       exporters: [prometheus]
