@@ -1,6 +1,12 @@
 import uvicorn
-from fastapi import FastAPI
 from random import randint
+from fastapi import FastAPI
+from opentelemetry import trace, metrics
+
+tracer = trace.get_tracer("diceroller.tracer")
+meter = metrics.get_meter("diceroller.meter")
+
+roll_counter = meter.create_counter("dice.rolls", description="The number of rolls by roll value")
 
 app = FastAPI()
 
@@ -12,14 +18,16 @@ def roll_dice(player: str = None):
 
 @app.get("/manual_rolldice")
 def manual_rolldice(player: str = None):
-    # TODO
-    # Criar meter e tracer para salvar as métricas
-    # Salvar valor do dado num atributo do span
-    # Criar um counter para salvar a quantidade de cada valor da rodada do dado numa métricas (quantos ums quantos dois quantos cincos)
-    # Adicionar os atributos player name e dice value ao trace
-    if player:
-        return f"{player} rolled the dice! Result: {randint(1, 6)}"
-    return f"Result: {randint(1, 6)}"
+    with trace.get_current_span("roll") as roll_span:
+        result = randint(1,  6)
+
+        roll_span.set_attribute("player", player)
+        roll_span.set_attribute("roll_result", result)
+        roll_counter.add(1, {"roll.value": result})
+
+        if player:
+            return f"{player} rolled the dice! Result: {result}"
+        return f"Result: {result}"
     
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=False)
