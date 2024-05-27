@@ -13,13 +13,15 @@ exporters:
   prometheus:
     endpoint: 0.0.0.0:9090
     namespace: default
+  otlphttp:
+    endpoint: 0.0.0.0:4318
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging]
+      exporters: [logging, otlphttp]
     metrics:
       receivers: [otlp]
       processors: [batch]
