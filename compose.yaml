@@ -1,12 +1,28 @@
-version: "3.8"
 services:
+  app:
+    container_name: app
+
   grafana:
     image: grafana/grafana-enterprise
     container_name: grafana
     ports:
      - 3000:3000
+    depends_on:
+      - collector
+      - tempo
   
   tempo:
     image: grafana/tempo:latest
     container_name: tempo
-    
+    command: [ "-config.file=/etc/tempo.yaml" ]
+    volumes:
+      - ./config/tempo/tempo.yaml:/etc/tempo.yaml
+  
+  collector:
+    image: otel/opentelemetry-collector-contrib
+    container_name: collector
+    command: [ "--config=/etc/collector.yaml"]
+    volumes:
+      - ./config/opentelemetry/otel-collector-config.yaml:/etc/collector.yaml
+    depends_on:
+      - tempo
