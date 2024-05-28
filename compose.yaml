@@ -1,6 +1,13 @@
 services:
   app:
     container_name: app
+    build: .
+    ports:
+      - 8000:8000
+    depends_on:
+      - collector
+    networks:
+      - grafana
 
   grafana:
     image: grafana/grafana-enterprise
@@ -9,15 +16,21 @@ services:
      - 3000:3000
     depends_on:
       - collector
-      - tempo
-  
-  tempo:
-    image: grafana/tempo:latest
-    container_name: tempo
-    command: [ "-config.file=/etc/tempo.yaml" ]
+      - app
+    networks:
+      - grafana
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    command: [ "--config.file=/etc/prometheus/prometheus.yaml" ]
+    ports:
+      - 9090:9090
     volumes:
-      - ./config/tempo/tempo.yaml:/etc/tempo.yaml
-  
+      - ./config/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+    networks:
+      - grafana
+
   collector:
     image: otel/opentelemetry-collector-contrib
     container_name: collector
@@ -25,4 +38,9 @@ services:
     volumes:
       - ./config/opentelemetry/otel-collector-config.yaml:/etc/collector.yaml
     depends_on:
-      - tempo
+      - prometheus
+    networks:
+      - grafana
+
+networks:
+  grafana:
