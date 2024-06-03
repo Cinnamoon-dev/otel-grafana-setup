@@ -12,6 +12,8 @@ services:
   grafana:
     image: grafana/grafana-enterprise
     container_name: grafana
+    volumes:
+      - ./config/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
     ports:
      - 3000:3000
     depends_on:
@@ -20,27 +22,49 @@ services:
     networks:
       - grafana
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    command: [ "--config.file=/etc/prometheus/prometheus.yaml" ]
-    ports:
-      - 9090:9090
-    volumes:
-      - ./config/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
-    networks:
-      - grafana
-
   collector:
     image: otel/opentelemetry-collector-contrib
     container_name: collector
-    command: [ "--config=/etc/collector.yaml"]
+    command: [ "--config=/etc/collector.yaml" ]
     volumes:
       - ./config/opentelemetry/otel-collector-config.yaml:/etc/collector.yaml
     depends_on:
-      - prometheus
+      - tempo
     networks:
       - grafana
+    
+  init:
+    image: &tempoImage grafana/tempo:latest
+    user: root
+    entrypoint: 
+      - "chown"
+      - "10001:10001"
+      - "/var/tempo_data"
+    volumes:
+      - ./config/tempo/data:/var/tempo
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - --config.file=/etc/prometheus.yaml
+      - --web.enable-remote-write-receiver
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./config/prometheus/prometheus.yaml:/etc/prometheus.yaml
+
+  tempo:
+    image: *tempoImage
+    container_name: tempo
+    command: [ "--config.file=/etc/tempo.yaml", "--storage.trace.backend=local", "--distributor.log-received-spans.enabled" ]
+    volumes:
+      - ./config/tempo/tempo.yaml:/etc/tempo.yaml
+      - ./config/tempo/data:/var/tempo
+    ports:
+      - 3200:3200
+    networks:
+      - grafana
+    depends_on:
+      - init
 
 networks:
   grafana:
