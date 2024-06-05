@@ -2,12 +2,9 @@ services:
   app:
     container_name: app
     build: .
-    ports:
-      - 8000:8000
+    network_mode: host
     depends_on:
       - collector
-    networks:
-      - grafana
 
   grafana:
     image: grafana/grafana-enterprise
@@ -26,6 +23,9 @@ services:
     image: otel/opentelemetry-collector-contrib
     container_name: collector
     command: [ "--config=/etc/collector.yaml" ]
+    ports:
+      - 4317:4317
+      - 4318:4318
     volumes:
       - ./config/opentelemetry/otel-collector-config.yaml:/etc/collector.yaml
     depends_on:
@@ -45,12 +45,15 @@ services:
 
   prometheus:
     image: prom/prometheus:latest
+    container_name: prometheus
     command:
       - --config.file=/etc/prometheus.yaml
       - --web.enable-remote-write-receiver
       - --enable-feature=exemplar-storage
     volumes:
       - ./config/prometheus/prometheus.yaml:/etc/prometheus.yaml
+    networks:
+      - grafana
 
   tempo:
     image: *tempoImage
