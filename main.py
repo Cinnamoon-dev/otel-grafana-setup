@@ -18,7 +18,7 @@ def roll_dice(player: str = None):
 
 @app.get("/manual_rolldice")
 def manual_rolldice(player: str = None):
-    with trace.get_current_span("roll") as roll_span:
+    with tracer.start_as_current_span("roll") as roll_span:
         result = randint(1,  6)
 
         roll_span.set_attribute("player", player)
@@ -30,4 +30,4 @@ def manual_rolldice(player: str = None):
         return f"Result: {result}"
     
 if __name__ == "__main__":
-    uvicorn.run("main:app", reload=False)
+    uvicorn.run("main:app", port=8000, reload=False, host="0.0.0.0")

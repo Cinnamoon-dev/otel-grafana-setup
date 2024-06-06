@@ -10,6 +10,7 @@ python = "^3.12"
 fastapi = "^0.111.0"
 uvicorn = {extras = ["standard"], version = "^0.29.0"}
 opentelemetry-distro = "^0.45b0"
+opentelemetry-exporter-otlp-proto-grpc = "^1.25.0"
 
 
 [build-system]
