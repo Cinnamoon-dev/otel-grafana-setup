@@ -4,9 +4,9 @@ from fastapi import FastAPI
 from opentelemetry import trace, metrics
 
 tracer = trace.get_tracer("diceroller.tracer")
-meter = metrics.get_meter("diceroller.meter")
+meter = metrics.get_meter("diceroller_meter")
 
-roll_counter = meter.create_counter("dice.rolls", description="The number of rolls by roll value")
+roll_counter = meter.create_counter("dice_rolls", description="The number of rolls by roll value")
 
 app = FastAPI()
 
@@ -23,7 +23,7 @@ def manual_rolldice(player: str = None):
 
         roll_span.set_attribute("player", player)
         roll_span.set_attribute("roll_result", result)
-        roll_counter.add(1, {"roll.value": result})
+        roll_counter.add(1, {"roll_value": result})
 
         if player:
             return f"{player} rolled the dice! Result: {result}"
