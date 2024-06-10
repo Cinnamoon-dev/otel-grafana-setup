@@ -2,28 +2,16 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:4317
-      http:
-        endpoint: 0.0.0.0:4318
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
 
 processors:
   batch:
 
-exporters:
-  logging:
-    loglevel: debug
-  prometheus:
-    endpoint: 0.0.0.0:9090
-    namespace: default
-  file:
-    path: ./filename.json
-
 service:
   pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [batch]
-      exporters: [logging]
     metrics:
       receivers: [otlp]
       processors: [batch]
