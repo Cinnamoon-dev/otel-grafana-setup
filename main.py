@@ -1,5 +1,6 @@
 import uvicorn
 from random import randint
+from typing import Optional
 from fastapi import FastAPI
 from opentelemetry import trace, metrics
 
@@ -11,13 +12,13 @@ roll_counter = meter.create_counter("dice.rolls", unit="rolls", description="The
 app = FastAPI()
 
 @app.get("/rolldice")
-def roll_dice(player: str = None):
-    if player:
+async def roll_dice(player: str = ""):
+    if len(player) > 0:
         return f"{player} rolled the dice! Result: {randint(1, 6)}"
     return f"Result: {randint(1, 6)}"
 
 @app.get("/manual_rolldice")
-def manual_rolldice(player: str = None):
+async def manual_rolldice(player: str = ""):
     with tracer.start_as_current_span("roll") as roll_span:
         result = randint(1,  6)
 
@@ -25,7 +26,7 @@ def manual_rolldice(player: str = None):
         roll_span.set_attribute("roll_result", result)
         roll_counter.add(1, {"roll.value": result})
 
-        if player:
+        if len(player) > 0:
             return f"{player} rolled the dice! Result: {result}"
         return f"Result: {result}"
     
