@@ -6,3 +6,8 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: ['prometheus:9090']
+  - job_name: "otel-collector"
+    scrape_interval: 10s
+    static_configs:
+      - targets: ["collector:8889"]
+      - targets: ["collector:8888"]
