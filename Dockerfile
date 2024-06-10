@@ -10,4 +10,4 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["opentelemetry-instrument", "--traces_exporter", "otlp", "--metrics_exporter", "none", "--logs_exporter", "otlp", "--service_name", "otel_service_name_test", "python3", "main.py"]
+CMD ["opentelemetry-instrument", "--traces_exporter", "otlp", "--metrics_exporter", "otlp", "--logs_exporter", "otlp", "--service_name", "otel_service_name_test", "python3", "main.py"]
