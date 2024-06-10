@@ -6,7 +6,7 @@ from opentelemetry import trace, metrics
 tracer = trace.get_tracer("diceroller.tracer")
 meter = metrics.get_meter("diceroller.meter")
 
-roll_counter = meter.create_counter("dice.rolls", description="The number of rolls by roll value")
+roll_counter = meter.create_counter("dice.rolls", unit="rolls", description="The number of rolls by roll value")
 
 app = FastAPI()
 
