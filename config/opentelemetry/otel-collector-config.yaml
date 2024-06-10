@@ -14,6 +14,10 @@ exporters:
     endpoint: tempo:4317
     tls:
       insecure: true
+  prometheusremotewrite:
+    endpoint: "http://localhost:8321"
+    resource_to_telemetry_conversion:
+      enabled: true
 
 service:
   pipelines:
@@ -21,3 +25,7 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [otlp]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheusremotewrite]
