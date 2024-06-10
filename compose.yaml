@@ -24,6 +24,8 @@ services:
     container_name: collector
     command: [ "--config=/etc/collector.yaml" ]
     ports:
+      - 8888:8888 # Collector health metrics
+      - 8889:8889 # Application metrics
       - 4317:4317
       - 4318:4318
     volumes:
