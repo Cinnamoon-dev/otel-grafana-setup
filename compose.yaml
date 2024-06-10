@@ -50,6 +50,8 @@ services:
       - --config.file=/etc/prometheus.yaml
       - --web.enable-remote-write-receiver
       - --enable-feature=exemplar-storage
+    ports:
+      - 9090:9090
     volumes:
       - ./config/prometheus/prometheus.yaml:/etc/prometheus.yaml
     networks:
