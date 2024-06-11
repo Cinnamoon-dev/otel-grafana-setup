@@ -1,6 +1,5 @@
 import uvicorn
 from random import randint
-from typing import Optional
 from fastapi import FastAPI
 from opentelemetry import trace, metrics
 
