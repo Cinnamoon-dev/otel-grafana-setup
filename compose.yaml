@@ -1,3 +1,6 @@
+networks:
+  grafana:
+
 services:
   app:
     container_name: app
@@ -26,8 +29,8 @@ services:
     ports:
       - 8888:8888 # Collector health metrics
       - 8889:8889 # Application metrics
-      - 4317:4317
-      - 4318:4318
+      - 4317:4317 # GRPC receiver
+      - 4318:4318 # HTTP receiver
     volumes:
       - ./config/opentelemetry/otel-collector-config.yaml:/etc/collector.yaml
     depends_on:
@@ -35,7 +38,7 @@ services:
     networks:
       - grafana
     
-  init:
+  tempo_init:
     image: &tempoImage grafana/tempo:latest
     user: root
     entrypoint: 
@@ -70,6 +73,10 @@ services:
       - grafana
     depends_on:
       - init
-
-networks:
-  grafana:
+  
+  loki:
+    image: grafana/loki
+    ports:
+      - 3100:3100
+    networks:
+      - grafana
