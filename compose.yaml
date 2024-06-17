@@ -72,7 +72,7 @@ services:
     networks:
       - grafana
     depends_on:
-      - init
+      - tempo_init
   
   loki:
     image: grafana/loki
