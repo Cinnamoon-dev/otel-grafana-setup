@@ -1,7 +1,11 @@
-import uvicorn
+import uvicorn, logging
 from random import randint
 from fastapi import FastAPI
 from opentelemetry import trace, metrics
+
+# TODO
+# Fazer uso da biblioteca logging para exportar os logs para o Loki
+logger = logging.getLogger()
 
 tracer = trace.get_tracer("diceroller.tracer")
 meter = metrics.get_meter("diceroller.meter")
