@@ -5,6 +5,8 @@ from opentelemetry import trace, metrics
 
 # TODO
 # Fazer uso da biblioteca logging para exportar os logs para o Loki
+# Criar um novo endpoint que tenha um log de erro para caso o valor do dado seja maior que 3
+# Colocar o span context no log, junto com as informações essenciais
 logger = logging.getLogger()
 
 tracer = trace.get_tracer("diceroller.tracer")
@@ -14,16 +16,19 @@ roll_counter = meter.create_counter("dice.rolls", unit="rolls", description="The
 
 app = FastAPI()
 
+def roll():
+    return randint(1, 6)
+
 @app.get("/rolldice")
 async def roll_dice(player: str = ""):
     if len(player) > 0:
-        return f"{player} rolled the dice! Result: {randint(1, 6)}"
-    return f"Result: {randint(1, 6)}"
+        return f"{player} rolled the dice! Result: {roll()}"
+    return f"Result: {roll()}"
 
 @app.get("/manual_rolldice")
 async def manual_rolldice(player: str = ""):
     with tracer.start_as_current_span("roll") as roll_span:
-        result = randint(1,  6)
+        result = roll()
 
         roll_span.set_attribute("player", player)
         roll_span.set_attribute("roll_result", result)
