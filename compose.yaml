@@ -81,7 +81,7 @@ services:
       - tempo_init
   
   loki:
-    image: grafana/loki
+    image: grafana/loki:main
     container_name: loki
     command: [ "-config.file=/etc/loki/local-config.yaml", "-print-config-stderr=true" ]
     volumes:
