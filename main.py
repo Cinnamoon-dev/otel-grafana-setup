@@ -50,8 +50,6 @@ async def manual_rolldice(player: str = ""):
     with tracer.start_as_current_span("roll") as roll_span:
         result = roll()
 
-        # TODO
-        # Colocar o span context no log, junto com as informações essenciais
         if result < 3:
             logging.error(msg="A value below average appeared")
             log_counter.add(1, {"type.value": "below average"})
