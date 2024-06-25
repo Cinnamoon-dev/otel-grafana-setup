@@ -1,3 +1,5 @@
+.PHONY: run run_collector dry_run collector
+
 dry_run:
 	python3 main.py
 	
