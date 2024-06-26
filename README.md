@@ -1,19 +1,15 @@
-# otel-grafana-setup
-Repositório de configuração base para integração de uma API Python + OTEL Collector + Grafana Tempo
+# Instrumented Python API
+Repositório de uma configuração base para instrumentação de uma API Python com o Opentelemetry Collector e a stack do Grafana.
 
 ### Stack
-- Auto-Instrumentation
-- OTEL Collector
+- Opentelemetry Collector
 - Prometheus
 - Loki
 - Tempo
 - Grafana
 
-### Collector
-A configuração base vai ser:
+### Arquitetura
+![System Architecture](docs/system_architecture.png)
+O armazenamento de logs, traces e metrics é feito localmente e algumas escolhas de arquitetura foram feitas pensando na preservação de configurações padrão buscando simplificar o processo de aprendizagem.
 
-#### Receiver
-Vai ser o Collector padrão então será: otlp
-
-#### Exporter
-É possível mandar direto para o banco do Prometheus configurando apenas a porta que o banco está localizado.
+Por exemplo, a aplicação está com `network_mode: host` pois o opentelemetry collector exporta os dados de observabilidade por padrão para o localhost:4317/4318.
