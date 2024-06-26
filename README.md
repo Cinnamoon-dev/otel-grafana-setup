@@ -1,5 +1,5 @@
 # Instrumented Python API
-Repositório de uma configuração base para instrumentação de uma API Python com o Opentelemetry Collector e a stack do Grafana.
+Configuração base para instrumentação de uma API Python com o Opentelemetry Collector e a stack do Grafana.
 
 ### Stack
 - Opentelemetry Collector
