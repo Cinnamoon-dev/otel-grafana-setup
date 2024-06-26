@@ -13,3 +13,9 @@ Configuração base para instrumentação de uma API Python com o Opentelemetry 
 O armazenamento de logs, traces e metrics é feito localmente e algumas escolhas de arquitetura foram feitas pensando na preservação de configurações padrão buscando simplificar o processo de aprendizagem.
 
 Por exemplo, a aplicação está com `network_mode: host` pois o opentelemetry collector exporta os dados de observabilidade por padrão para o localhost:4317/4318.
+
+### Setup
+Toda a instrumentação foi feita usando o Docker Compose, logo pode-se rodar a aplicaÇão usando:
+```
+docker compose up --build
+```
