@@ -38,7 +38,6 @@ handler = LoggingHandler(level=logging.NOTSET, logger_provider=logger_provider)
 logging.getLogger().addHandler(handler)
 # ----------------------------------------------------------------------------------------
 
-
 tracer = trace.get_tracer("diceroller.tracer")
 meter = metrics.get_meter("diceroller.meter")
 
@@ -78,6 +77,29 @@ async def manual_rolldice(player: str = ""):
         if len(player) > 0:
             return f"{player} rolled the dice! Result: {result}"
         return f"Result: {result}"
+
+@app.get("/deco_roll")
+@tracer.start_as_current_span("deco_roll")
+async def decorated_rolldice(player: str = ""):
+    result = roll()
+
+    if result < 3:
+        logging.error(msg="level=error msg=\"A value below average appeared\"")
+        log_counter.add(1, {"type.value": "below average"})
+    if result == 3:
+        logging.warning(msg="level=warn msg=\"A average value appeared\"")
+        log_counter.add(1, {"type.value": "average"})
+    if result > 3:
+        logging.info(msg="level=info msg=\"A value above average appeared\"")
+        log_counter.add(1, {"type.value": "above average"})
+
+    trace.get_current_span().set_attribute("player", player)
+    trace.get_current_span().set_attribute("roll_result", result)
+    roll_counter.add(1, {"roll.value": result})
+
+    if len(player) > 0:
+        return f"{player} rolled the dice! Result: {result}"
+    return f"Result: {result}"
 
 if __name__ == "__main__":
     uvicorn.run("main:app", port=8000, reload=False, host="0.0.0.0")
