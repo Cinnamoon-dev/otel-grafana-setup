@@ -2,6 +2,7 @@ import uvicorn, logging
 from random import randint
 from fastapi import FastAPI
 from opentelemetry import trace, metrics
+from opentelemetry.trace import StatusCode
 from opentelemetry.sdk.resources import Resource
 from opentelemetry._logs import set_logger_provider
 from opentelemetry.sdk._logs import LoggerProvider, LoggingHandler
@@ -75,6 +76,7 @@ async def manual_rolldice(player: str = ""):
 
         roll_span.set_attribute("player", player)
         roll_span.set_attribute("roll_result", result)
+        roll_span.set_status(StatusCode.OK)
         roll_counter.add(1, {"roll.value": result})
 
         if len(player) > 0:
@@ -90,6 +92,7 @@ async def decorated_rolldice(player: str = ""):
 
     trace.get_current_span().set_attribute("player", player)
     trace.get_current_span().set_attribute("roll_result", result)
+    trace.get_current_span().set_status(StatusCode.OK)
     roll_counter.add(1, {"roll.value": result})
 
     if len(player) > 0:
