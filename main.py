@@ -76,6 +76,7 @@ async def manual_rolldice(player: str = ""):
 
         roll_span.set_attribute("player", player)
         roll_span.set_attribute("roll_result", result)
+        # Set a description only when the status code is ERROR
         roll_span.set_status(StatusCode.OK)
         roll_counter.add(1, {"roll.value": result})
 
@@ -92,6 +93,7 @@ async def decorated_rolldice(player: str = ""):
 
     trace.get_current_span().set_attribute("player", player)
     trace.get_current_span().set_attribute("roll_result", result)
+    # Set a description only when the status code is ERROR
     trace.get_current_span().set_status(StatusCode.OK)
     roll_counter.add(1, {"roll.value": result})
 
