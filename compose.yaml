@@ -6,8 +6,30 @@ services:
     container_name: app
     build: .
     network_mode: host
+    env_file:
+      - .env
     depends_on:
-      - collector
+      collector:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+  
+  postgres:
+    image: postgres:12.0-alpine
+    container_name: postgres
+    networks:
+      - grafana
+    expose:
+      - 5432
+    ports:
+      - 7013:5432
+    env_file:
+      - .env
+    healthcheck:
+      test: pg_isready -U postgres
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   grafana:
     image: grafana/grafana-enterprise
