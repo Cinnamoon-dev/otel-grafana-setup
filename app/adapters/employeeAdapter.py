@@ -1,5 +1,6 @@
 import json
 from fastapi import Response
+from app.database import get_db
 from app import instance_update
 from sqlalchemy.orm import Session
 from app.models.EmployeeModel import Employee
@@ -11,7 +12,7 @@ class EmployeeAdapter():
 
         return {"data": [employee.relationship_to_dict() for employee in employees]}
 
-    def view_one_employee(self, db: Session):
+    def view_one_employee(self, id: int, db: Session):
         employee = db.query(Employee).get(id)
 
         if not employee:
@@ -19,7 +20,7 @@ class EmployeeAdapter():
 
         return employee.to_dict()
 
-    def create_one_employee(self, request: dict[EmployeeRequest], db: Session):
+    def create_one_employee(self, request: EmployeeRequest, db: Session):
         email = request.get("email").lower()
 
         if db.query(Employee).filter(Employee.email == email).first():
