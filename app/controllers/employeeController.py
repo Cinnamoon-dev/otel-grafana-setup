@@ -15,7 +15,7 @@ def get_one_employee(id: int, db: db_dependency):
 
 @router.post("/add")
 def create_one_employee(employee: EmployeeRequest, db: db_dependency):
-    return EmployeeAdapter().create_one_employee(employee, db)
+    return EmployeeAdapter().create_one_employee(employee.model_dump(), db)
 
 @router.put("/edit/{id:int}")
 def edit_one_employee(id: int, fields: EmployeeEditRequest, db: db_dependency):
