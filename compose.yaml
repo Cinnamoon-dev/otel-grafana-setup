@@ -131,7 +131,7 @@ services:
       - loki_backup:/tmp/loki
   
   loki:
-    image: *lokiImage #grafana/loki:main
+    image: *lokiImage 
     container_name: loki
     command: [ "-config.file=/etc/loki/local-config.yaml", "-print-config-stderr=true" ]
     volumes:
