@@ -3,8 +3,11 @@ networks:
 
 volumes:
   tempo_backup:
+    external: true
   prometheus_backup:
+    external: true
   loki_backup:
+    external: true
 
 services:
   app:
@@ -119,7 +122,7 @@ services:
       - loki_backup:/tmp/loki
   
   loki:
-    image: *lokiImage 
+    image: *lokiImage
     container_name: loki
     command: [ "-config.file=/etc/loki/local-config.yaml", "-print-config-stderr=true" ]
     volumes:
