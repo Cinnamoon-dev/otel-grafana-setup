@@ -71,18 +71,8 @@ services:
     networks:
       - grafana
     
-  prometheus_init:
-    image: &prometheusImage prom/prometheus:latest
-    user: root
-    entrypoint:
-    - "chown"
-    - "65534:65534"
-    - "/promtheus/data"
-    volumes:
-      - prometheus_backup:/prometheus/data
-
   prometheus:
-    image: *prometheusImage 
+    image: prom/prometheus:latest 
     container_name: prometheus
     command:
       - --config.file=/etc/prometheus.yaml
@@ -91,8 +81,6 @@ services:
     volumes:
       - ./config/prometheus/prometheus.yaml:/etc/prometheus.yaml
       - prometheus_backup:/prometheus
-    depends_on:
-      - prometheus_init
     networks:
       - grafana
 
