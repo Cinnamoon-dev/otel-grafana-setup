@@ -2,6 +2,8 @@
 Configuração base para instrumentação de uma API Python com o Opentelemetry Collector e a stack do Grafana.
 
 ### Stack
+- Python FastAPI
+- PostgreSQL
 - Opentelemetry Collector
 - Prometheus
 - Loki
@@ -27,3 +29,6 @@ As portas padrões que os services estão rodando são as seguintes:
 - Prometheus - 9090
 - Tempo - 3200
 - Loki - 3100
+
+### Tracing
+Todo o fluxo de instrumentaÇão de traces pode ser visto [aqui](docs/tracing.md).
