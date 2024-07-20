@@ -1,16 +1,16 @@
 import json
 from fastapi import Response
-from app.database import get_db
 from app import instance_update
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session 
+from app.controllers import Filter
 from app.models.EmployeeModel import Employee
 from app.swagger_models.employeeModels import EmployeeRequest, EmployeeEditRequest
 
 class EmployeeAdapter():
-    def list_all_employees(self, db: Session):
-        employees = db.query(Employee).all()
+    def list_all_employees(self, db: Session, request_args: dict[str, str] = None):
+        filtered_employees = Filter(db, Employee, request_args)
 
-        return {"data": [employee.relationship_to_dict() for employee in employees]}
+        return {"data": [employee.relationship_to_dict() for employee in filtered_employees.get_ordered_data()]}
 
     def view_one_employee(self, id: int, db: Session):
         employee = db.query(Employee).get(id)
