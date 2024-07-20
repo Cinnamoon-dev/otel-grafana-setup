@@ -15,10 +15,10 @@ class Filter:
         self.query = db.query(table)
         self.request_args = request_args
 
-        self.__order_data()
+        self._order_data()
     
-    def __order_data(self):
-        if self.request_args is None:
+    def _order_data(self):
+        if len(self.request_args.keys()) == 0:
             return
 
         order_types = {
